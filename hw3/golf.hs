@@ -21,8 +21,13 @@ getCount n xs = length (filter (n==) xs)
 getCounts :: [Int] -> [Int]
 getCounts xs = [getCount i xs | i <- [0..9]]
 
+getLevelStr :: Int -> [Int] -> String
+getLevelStr n xs =  [ if (getCount i xs) >= n then '*' else ' '  | i <- [0..9]]
+
 histogram :: [Int] -> String
-histogram _ = ""
+histogram xs = unlines (graph ++ footer) where
+    graph = [ getLevelStr i xs | i <- reverse [1..maximum (getCounts xs)]]
+    footer = [['=' | _ <- [0..9]], (foldl (++) "" [show i | i <- [0..9]])]
 -- End histogram
 
 main = do
@@ -37,4 +42,5 @@ main = do
 
     let histogram_data = [1,4,5,4,6,6,3,4,2,4,9]
     print (getCounts histogram_data)
-    print (histogram histogram_data)
+    putStr (histogram histogram_data)
+    putStr (histogram [1,1,1,5])
