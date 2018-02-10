@@ -35,6 +35,22 @@ foldTree (x:xs) = result where
     d = (maximum [treeDepth left_subtree, treeDepth right_subtree]) + 1
     result = Node d left_subtree x right_subtree
 
+xor :: [Bool] -> Bool
+xor xs = odd (length (filter id xs))
+
+map' :: (a -> b) -> [a] -> [b]
+map' _ [] = []
+map' f xs = foldr (\a as -> f a : as) [] xs
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = result where
+    ns = [1..n]
+    ijs = foldl (++) [] [zip [1..i] (repeat i) | i <- ns]
+    blklist = [0] ++ (sort (filter (<=n) (map (\(x, y) -> (x + y + (2 * x * y))) ijs)))
+    prime_ranges = [[(i+1)..(j-1)] | (i, j) <- (zip blklist (drop 1 blklist))]
+    result = foldl (++) [] [map (\x-> 2*x+1) xs | xs <- prime_ranges]
+
+
 main = do
     let seq1 = [1, 4, 3, 6, 5, 8, 9, 10, 11, 12]
     let seq2 = [1, 3, 5, 7]
@@ -44,3 +60,7 @@ main = do
     print (fun1 seq2)
     print (fun1' seq2)
     print (foldTree "ABCDEFGHIJ")
+    print (xor [True, False, False, False] == True)
+    print (xor [True, True, False, False, False] == False)
+    print (map' (*2) [1, 2, 3, 4, 5, 6])
+    print (sieveSundaram 10000)
