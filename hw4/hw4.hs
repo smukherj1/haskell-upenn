@@ -45,10 +45,10 @@ map' f xs = foldr (\a as -> f a : as) [] xs
 sieveSundaram :: Integer -> [Integer]
 sieveSundaram n = result where
     ns = [1..n]
-    ijs = foldl (++) [] [zip (repeat i) [i..((n-i) `div` (2*i+1))] | i <- ns]
-    blklist = sort ([0] ++ (map (\(x, y) -> (x + y + (2 * x * y))) ijs))
-    prime_ranges = [[(i+1)..(j-1)] | (i, j) <- (zip blklist (drop 1 blklist))]
-    result = foldl (++) [] [map (\x-> 2*x+1) xs | xs <- prime_ranges]
+    sieve = filter (<=n) [i+j+2*i*j | i <- ns, j <- [i..(n-i)`div`(2*i+1)]]
+    blklist = sort sieve
+    result' = [2*i+1 | i <- [1..n], notElem i blklist]
+    result = [2] ++ result'
 
 
 main = do
