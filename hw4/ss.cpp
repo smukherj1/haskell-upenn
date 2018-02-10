@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <functional>
+#include <boost/function_output_iterator.hpp>
+#include <boost/range/irange.hpp>
 
 using uint_vector = std::vector<unsigned>;
 
@@ -18,13 +21,17 @@ uint_vector sieve_sundaram(unsigned n)
         }
     }
 
-    for(unsigned i = 1; i <= (2 * n + 2); ++i)
-    {
-        if(filter[i] == false)
+    std::function<void(unsigned)> to_prime = [&result](unsigned i) {
+        result.emplace_back(2*i+1);
+    };
+    auto output_it = boost::make_function_output_iterator(to_prime);
+    auto irange = boost::irange(1u, n);
+    std::copy_if(irange.begin(), irange.end(), output_it,
+        [&filter](unsigned i)
         {
-            result.push_back(2*i + 1);
+            return filter[i] == false;
         }
-    }
+    );
 
     return result;
 }
